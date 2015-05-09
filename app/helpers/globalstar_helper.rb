@@ -1,0 +1,2 @@
+module GlobalstarHelper
+end

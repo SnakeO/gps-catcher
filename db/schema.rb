@@ -11,18 +11,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150429084615) do
+ActiveRecord::Schema.define(version: 20150510021542) do
+
+  create_table "parsed_messages", force: :cascade do |t|
+    t.string   "origin_message_type", limit: 255
+    t.integer  "origin_message_id",   limit: 4
+    t.string   "esn",                 limit: 255
+    t.string   "source",              limit: 255
+    t.string   "value",               limit: 255
+    t.string   "meta",                limit: 255
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
 
   create_table "prv_messages", force: :cascade do |t|
-    t.string   "raw"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text     "raw",        limit: 65535
+    t.string   "status",     limit: 255
+    t.string   "extra",      limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "stu_messages", force: :cascade do |t|
-    t.string   "raw"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.text     "raw",        limit: 65535
+    t.string   "status",     limit: 255
+    t.string   "extra",      limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
 end

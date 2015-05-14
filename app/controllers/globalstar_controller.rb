@@ -1,6 +1,25 @@
+require 'net/ssh/gateway'
+
 class GlobalstarController < ApplicationController
 
 	skip_before_action :verify_authenticity_token
+
+	def work
+		StuMessage.where(processed_stage:0).each do |stu_message|
+			
+			if stu_message.status == 'ok'
+				stu_message.processed_stage = 1
+				GlobalstarWorker.perform_async(stu_message.raw, stu_message.id)
+			else
+				stu_message.processed_stage = -1 # mark this row as 'skipped'
+			end
+
+			stu_message.save
+
+		end
+
+		render :text => 'done'
+	end
 
 	# STU message
 	def stu
@@ -27,7 +46,7 @@ class GlobalstarController < ApplicationController
 
 		render :text => stuResponse('PASS', 'STU Message OK', msg.id)
 	end
-
+	
 	def stuResponse(state, message='', message_id)
 		msg = '''
 		<?xml version="1.0" encoding="UTF-8"?>

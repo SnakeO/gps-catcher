@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
   post 'globalstar/stu'
   post 'globalstar/prv'
+  get 'globalstar/work'
+  get 'globalstar/test_port_forwarding'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

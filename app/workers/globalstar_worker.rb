@@ -25,20 +25,20 @@ class GlobalstarWorker
 
 			# back to stage 0 if it was unsuccessful
 			msg_obj.processed_stage = success ? 2 : 0
-			msg_obj.extra = success ? '' : '1 or more parsed messages failed'
-			
+			msg_obj.extra = success ? 'success' : '1 or more parsed messages failed'	
 
 		rescue Exception => e
+
+			puts "ERROR handling origin_message_id (#{origin_message_id}): #{e}"
 
 			msg_obj.extra = "ERROR handling: #{e}"
 			msg_obj.processed_stage = 0
 			
-			puts msg_obj.extra
+		#	puts msg_obj.extra
 
 		end
 
 		msg_obj.save()
-		#PGConn.close()
 
 	end
 
@@ -52,7 +52,7 @@ class GlobalstarWorker
 			success = success && handleSTU(stu, origin_message_id, external_message_id)
 		end
 
-		return success
+		success
 	end
 
 	def handleSTU(doc, origin_message_id, external_message_id)
@@ -75,18 +75,22 @@ class GlobalstarWorker
 		decode = Globalstar::Decoder.new
 		parsed_messages = decode.payload(payload, external_message_id)
 
+		send_res = true
+
 		parsed_messages.each_with_index do |parsed_message, i|
 
 			parsed_message.occurred_at = Time.at(unix_timestamp).utc
 			parsed_message.origin_message_type = 'stu'
 			parsed_message.origin_message_id = origin_message_id
 			parsed_message.esn = esn
-			parsed_message.num_tries += 1
+			parsed_message.info = nil
 			parsed_message.save
 
-			self.sendParsedMessageToPostgres(parsed_message)
+			send_res = send_res && self.sendParsedMessageToPostgres(parsed_message)
 
 		end
+
+		send_res
 
 	end
 
@@ -94,47 +98,60 @@ class GlobalstarWorker
 	# http://exposinggotchas.blogspot.com/2011/02/activerecord-migrations-without-rails.html
 	def sendParsedMessageToPostgres(parsed_message)
 
-		begin
-			sql = 'opening pg connection...'	# for the sake of our 'rescue'
-			pg = PGConn.get
+		# skip messages that have already been sent
+		return true if parsed_message.is_sent
 
+		parsed_message.num_tries += 1
+		msg = nil
+
+		begin
+			
 			if parsed_message.source == 'location'
 
 				latlng = parsed_message.value.split(',')
 				lat = latlng[0]
 				lng = latlng[1]
 
-				# location messages get their lat/lng stored as a point
-				sql = "INSERT INTO location_msg (esn,occurred_at,geom,meta,unique_msg_id) VALUES (
-					'#{parsed_message.esn}', 
-					'#{parsed_message.occurred_at.strftime('%Y-%m-%d %H:%M:%S')}',
-					ST_GeomFromText('POINT(#{lng} #{lat})', 4269),
-					'#{parsed_message.meta}',
-					'#{parsed_message.message_id}'
-				);"
+				if lat == '0.0' && lng == '0.0'
+					raise "Lat and Lng are both 0.0"
+				end
+
+				msg = LocationMsg.new(
+					esn: parsed_message.esn, 
+					occurred_at: parsed_message.occurred_at,
+					point: RGeo::Geographic.spherical_factory(:srid => 4326).point(lng, lat),
+				#	point: RGeo::Cartesian.factory(:srid => 4326).point(lng, lat), 
+				#	point: RGeo::Cartesian.factory(:srid => 4326).parse_wkt("POINT(#{lng} #{lat})"),
+				#	point: "POINT(#{lng} #{lat})",
+					meta: parsed_message.meta,
+					message_id: parsed_message.message_id
+				)
+
+				msg.save
 				
 			else
 
-				# location messages get their lat/lng stored as a point
-				sql = "INSERT INTO info_msg (esn,occurred_at,source,value,meta,unique_msg_id) VALUES (
-					'#{parsed_message.esn}', 
-					'#{parsed_message.occurred_at.strftime('%Y-%m-%d %H:%M:%S')}',
-					'#{parsed_message.source}',
-					'#{parsed_message.value}',
-					'#{parsed_message.meta}',
-					'#{parsed_message.message_id}'
-				);"
+				msg = InfoMsg.new(
+					esn: parsed_message.esn, 
+					occurred_at: parsed_message.occurred_at,
+					source: parsed_message.source,
+					value: parsed_message.value,
+					meta: parsed_message.meta,
+					message_id: parsed_message.message_id
+				)
 
+				msg.save
+			
 			end
 
-			pg.exec sql
 			parsed_message.is_sent = true
+			parsed_message.save
 
 		rescue Exception => e
 				
 			# log the error
 			parsed_message.is_sent = false
-			parsed_message.info = "PG INSERT ERROR: #{e} - #{sql}"
+			parsed_message.info = "PG INSERT ERROR: #{e}"
 			puts parsed_message.info
 			parsed_message.save
 
@@ -142,13 +159,13 @@ class GlobalstarWorker
 
 		end
 
-		return true
+		true
 
 	end
 
 	def handlePRVs(doc, origin_message_id)
 		puts "skipping PRV"
-		return true
+		true
 	end
 
 	def verify(esn, payload, payload_length, payload_encoding)

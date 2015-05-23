@@ -180,6 +180,7 @@ module Globalstar
 			turned_on_msg = ParsedMessage.new
 			turned_on_msg.source = source
 			turned_on_msg.value = power_value
+			turned_on_msg.message_id = turned_on_msg.makeHashID(@external_message_id)
 
 			turned_on_msg
 		end
@@ -196,6 +197,7 @@ module Globalstar
 			batt_msg = ParsedMessage.new
 			batt_msg.source = source
 			batt_msg.value = value
+			batt_msg.message_id = batt_msg.makeHashID(@external_message_id)
 
 			batt_msg
 		end
@@ -214,6 +216,7 @@ module Globalstar
 			loc_message.source = source
 			loc_message.value = value
 			loc_message.meta = JSON.generate(meta)
+			loc_message.message_id = loc_message.makeHashID(@external_message_id)
 
 			loc_message
 		end
@@ -230,6 +233,7 @@ module Globalstar
 			in_motion_msg = ParsedMessage.new
 			in_motion_msg.source = source
 			in_motion_msg.value = in_motion
+			in_motion_msg.message_id = in_motion_msg.makeHashID(@external_message_id)
 
 			in_motion_msg
 		end

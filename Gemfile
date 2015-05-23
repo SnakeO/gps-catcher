@@ -38,6 +38,7 @@ gem 'execjs'
 gem 'nokogiri'
 gem 'mysql2'
 gem 'pg'
+gem 'activerecord-postgis-adapter', "3.0.0.beta1"
 gem 'sidekiq'
 
 group :development, :test do

@@ -89,7 +89,7 @@ module Globalstar
 			loc_msg = getLocationMsg(gps_data_valid, latitude, longitude, {
 				twoD: twoD,
 				is_in_motion: in_motion,
-				is_confident: (fix_confidence_bit == 0) ? 1 : 0	# 0 means high confidence
+				confidence: (fix_confidence_bit == 0) ? 1 : 0	# 0 means high confidence
 			})
 			messages << loc_msg if loc_msg
 

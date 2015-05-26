@@ -17,9 +17,25 @@ class GlobalstarWorker
 
 			if( msg_type == 'stu' )
 				msg_obj = StuMessage.find origin_message_id
+
+				# skip messages that recently failed so we don't keep trying to re-process it every minute
+				if (msg_obj.created_at != msg_obj.updated_at) && (Time.now - 1.hours < msg_obj.updated_at)
+					msg_obj.processed_stage = 0
+					msg_obj.save
+					return
+				end
+
 				success = handleSTUs(doc, origin_message_id)
 			else 
 				msg_obj = PrvMessage.find origin_message_id
+
+				# skip messages that recently failed so we don't keep trying to re-process it every minute
+				if (msg_obj.created_at != msg_obj.updated_at) && (Time.now - 1.hours < msg_obj.updated_at)
+					msg_obj.processed_stage = 0
+					msg_obj.save
+					return
+				end
+
 				handlePRVs(doc, origin_message_id)
 			end
 
@@ -86,80 +102,11 @@ class GlobalstarWorker
 			parsed_message.info = nil
 			parsed_message.save
 
-			send_res = send_res && self.sendParsedMessageToPostgres(parsed_message)
+			send_res = send_res && parsed_message.sendToPostgres()
 
 		end
 
 		send_res
-
-	end
-
-	# save to postgres
-	# http://exposinggotchas.blogspot.com/2011/02/activerecord-migrations-without-rails.html
-	def sendParsedMessageToPostgres(parsed_message)
-
-		# skip messages that have already been sent
-		return true if parsed_message.is_sent
-
-		parsed_message.num_tries += 1
-		msg = nil
-
-		begin
-			
-			if parsed_message.source == 'location'
-
-				latlng = parsed_message.value.split(',')
-				lat = latlng[0]
-				lng = latlng[1]
-
-				if lat == '0.0' && lng == '0.0'
-					raise "Lat and Lng are both 0.0"
-				end
-
-				msg = LocationMsg.new(
-					esn: parsed_message.esn, 
-					occurred_at: parsed_message.occurred_at,
-					point: RGeo::Geographic.spherical_factory(:srid => 4326).point(lng, lat),
-				#	point: RGeo::Cartesian.factory(:srid => 4326).point(lng, lat), 
-				#	point: RGeo::Cartesian.factory(:srid => 4326).parse_wkt("POINT(#{lng} #{lat})"),
-				#	point: "POINT(#{lng} #{lat})",
-					meta: parsed_message.meta,
-					message_id: parsed_message.message_id
-				)
-
-				msg.save
-				
-			else
-
-				msg = InfoMsg.new(
-					esn: parsed_message.esn, 
-					occurred_at: parsed_message.occurred_at,
-					source: parsed_message.source,
-					value: parsed_message.value,
-					meta: parsed_message.meta,
-					message_id: parsed_message.message_id
-				)
-
-				msg.save
-			
-			end
-
-			parsed_message.is_sent = true
-			parsed_message.save
-
-		rescue Exception => e
-				
-			# log the error
-			parsed_message.is_sent = false
-			parsed_message.info = "PG INSERT ERROR: #{e}"
-			puts parsed_message.info
-			parsed_message.save
-
-			return false
-
-		end
-
-		true
 
 	end
 

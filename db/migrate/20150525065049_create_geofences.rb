@@ -1,7 +1,7 @@
 class CreateGeofences < ActiveRecord::Migration
 
    def connection
-     GeoFence.connection
+     Geofence.connection
    end
 
   def change

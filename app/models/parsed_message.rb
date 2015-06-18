@@ -49,8 +49,14 @@ class ParsedMessage < ActiveRecord::Base
 				lat = latlng[0]
 				lng = latlng[1]
 
+				# smartoneb does this
 				if lat == '0.0' && lng == '0.0'
 					raise "Lat and Lng are both 0.0"
+				end
+
+				# spot trace does this
+				if lat == '-99999.0' && lng == '-99999.0'
+					raise "Lat and Lng are both -99999.0"
 				end
 
 				msg = LocationMsg.new(

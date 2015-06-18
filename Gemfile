@@ -40,6 +40,7 @@ gem 'mysql2'
 gem 'pg'
 gem 'activerecord-postgis-adapter', "3.0.0.beta1"
 gem 'sidekiq'
+gem 'httparty'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

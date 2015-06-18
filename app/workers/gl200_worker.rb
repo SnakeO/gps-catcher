@@ -27,19 +27,24 @@ class Gl200Worker
 			fields = csv.split ','
 			header = fields.shift.split ':'
 
-			if header[0] != '+RESP' && header[0] != '+BUFF'
-				raise "Unknown header: #{header[0]}"
+			header_via = header[0]
+			header_type = header[1]
+
+			if header_via != '+RESP' && header_via != '+BUFF'
+				raise "Unknown header: #{header_via}"
 			end
 
-			puts "message header: #{header[1]}"
-			
-			if header[1] == 'GTFRI'
+			puts "message header type: #{header_type}"
+
+			position_report_headers = ['GTFRI', 'GTGEO', 'GTSPD', 'GTSOS', 'GTRTL', 'GTPNL', 'GTNMR', 'GTDIS', 'GTDOG', 'GTIGL', 'GTPFL']
+
+			if position_report_headers.include? header_type
 				# timed report, or if a user turned around (if that feature is enabled)
-				success = handleGTFRI fields, origin_message_id
-			elsif header[1] == 'GTGSM'
+				success = handlePositionReport header_type, fields, origin_message_id
+			elsif header_type == 'GTGSM'
 				# The report of the information of the service cell and neighbor cells
 			else
-				raise "Unknown message type #{header[1]}"
+				raise "Unknown message header_type #{header_type}"
 			end
 
 			# back to stage 0 if it was unsuccessful
@@ -60,14 +65,14 @@ class Gl200Worker
 	end
 
 
-	def handleGTFRI(fields, origin_message_id)
+	def handlePositionReport(header_type, fields, origin_message_id)
 
-		puts "#{fields}"
+		puts "#{header_type}|#{fields}"
 
-		verifyGTFRI(fields)
+		verifyPositionReport(fields)
 
 		decode = Gl200::Decoder.new
-		parsed_messages = decode.GTFRI(fields)
+		parsed_messages = decode.positionReport(fields)
 
 		send_res = true
 
@@ -86,7 +91,7 @@ class Gl200Worker
 
 	end
 
-	def verifyGTFRI(fields)
+	def verifyPositionReport(fields)
 
 		if fields.length < 21
 			raise "too few fields: #{fields.length} expected at least 21"

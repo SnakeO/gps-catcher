@@ -19,22 +19,22 @@ class GlobalstarWorker
 				msg_obj = StuMessage.find origin_message_id
 
 				# skip messages that recently failed so we don't keep trying to re-process it every minute
-				if (msg_obj.created_at != msg_obj.updated_at) && (Time.now - 1.hours < msg_obj.updated_at)
-					msg_obj.processed_stage = 0
-					msg_obj.save
-					return
-				end
+				# if (msg_obj.created_at != msg_obj.updated_at) && (Time.now - 1.hours < msg_obj.updated_at)
+				# 	msg_obj.processed_stage = 0
+				# 	msg_obj.save
+				# 	return
+				# end
 
 				success = handleSTUs(doc, origin_message_id)
 			else 
 				msg_obj = PrvMessage.find origin_message_id
 
 				# skip messages that recently failed so we don't keep trying to re-process it every minute
-				if (msg_obj.created_at != msg_obj.updated_at) && (Time.now - 1.hours < msg_obj.updated_at)
-					msg_obj.processed_stage = 0
-					msg_obj.save
-					return
-				end
+				# if (msg_obj.created_at != msg_obj.updated_at) && (Time.now - 1.hours < msg_obj.updated_at)
+				# 	msg_obj.processed_stage = 0
+				# 	msg_obj.save
+				# 	return
+				# end
 
 				handlePRVs(doc, origin_message_id)
 			end

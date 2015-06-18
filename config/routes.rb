@@ -9,6 +9,12 @@ Rails.application.routes.draw do
   get 'gl200/work'
   post 'gl200/msg'
 
+  get 'spot_trace/work'
+  post 'spot_trace/msg'
+
+  get 'geofence/check'
+  get 'geofence/work'
+
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 

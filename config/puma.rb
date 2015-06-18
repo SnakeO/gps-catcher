@@ -2,7 +2,7 @@ path = Dir.pwd + "/tmp/"
 
 threads 0,20
 environment "development"
-daemonize true
+daemonize false
 drain_on_shutdown true
 
 bind  "unix://" + path + "sockets/puma.sock"

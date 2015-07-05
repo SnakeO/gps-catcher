@@ -31,5 +31,5 @@ pg:
   database: gps
   username: gps
   password: Track.all.the.things!
-  host: gps.websitesonwheels.net
+  host: gps-db
   port: 5432

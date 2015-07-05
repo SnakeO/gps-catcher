@@ -13,7 +13,7 @@ class PGConn
 
 	def self.init()
 		@@conn = PG.connect({
-			host: 'gps.websitesonwheels.net', 
+			host: 'gps-db', 
 			dbname: 'gps', 
 			port: 5432, 
 			user:'gps', 

@@ -1,3 +1,7 @@
+###
+# This class listens for incoming TCP connections from the GL200, and proxies the message to an HTTP endpoint
+###
+
 require 'net/http'
 
 remote_host = 'ror.raco1.websitesonwheels.net'

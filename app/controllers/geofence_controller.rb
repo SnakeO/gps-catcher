@@ -7,26 +7,30 @@ class GeofenceController < ApplicationController
 
 		last_location_msg_checked = Setting.where(key:'last_location_msg_checked').first
 		start_id = last_location_msg_checked.value.to_i
-		start_id = 0
 
 		num = 0
-		LocationMsg.where('id > :id', {id:start_id}).each_with_index do |message, i|
+		LocationMsg.where('id > :id', {id:start_id}).order(occurred_at:'ASC').each_with_index do |message, i|
 
 			Geofence.where(esn:message.esn).each do |fence|
 
 				begin
 
 					# has this fence been deleted already?
-					# next if fence.deleted_at != nil
+					next if fence.deleted_at != nil
 
 					# is this a single-alert fence that's already fired?
 					# next if fence.is_single_alert && fence.num_alerts_sent > 0
 
 					# make sure the fence existed when this location point happened
-					# next if fence.created_at > message.occurred_at
+					next if fence.created_at > message.occurred_at
+
+					last_fence_state = FenceState.where(esn:message.esn).where(geofence_id:fence.id).order(occurred_at:'DESC').first
+
+					# next if we've already checked past this point. last_location_msg_checked should protect against this, but
+					# add this layer of protection in anyway.
+					next if last_fence_state && last_fence_state.occurred_at > message.occurred_at
 
 					is_inside = fence.contains(message.point.y, message.point.x)
-					last_fence_state = FenceState.where(esn:message.esn).where(geofence_id:fence.id).order(occurred_at:'DESC').first
 
 					curr_fence_state = FenceState.new({
 						geofence: fence,
@@ -38,9 +42,11 @@ class GeofenceController < ApplicationController
 
 					# very first state found?
 					if last_fence_state == nil 
+						last_fence_state = FenceState.new
+						last_fence_state.state = nil
 						# then just record it and be on our way
-						curr_fence_state.save
-						next
+						# curr_fence_state.save
+						# next
 					end
 
 					# no change in state? then keep on goin
@@ -51,10 +57,11 @@ class GeofenceController < ApplicationController
 
 					if (fence.alert_type == 'i' || fence.alert_type == 'b') && last_fence_state.state == 'o' && curr_fence_state.state == 'i'
 						puts "ALERT - #{curr_fence_state.esn} ENTERED FENCE #{curr_fence_state.geofence_id} @ #{curr_fence_state.occurred_at} (#{fence.alert_type})"
-						
+						puts "\tlast_fence_state: #{last_fence_state.state} @ #{last_fence_state.occurred_at}"
+
 						fence_alert = FenceAlert.new({
 							geofence: curr_fence_state.geofence,
-							webhook_url: 'http://gps.tools/wp-admin/admin-ajax.php?action=Geofence/alert_webhook'
+							webhook_url: curr_fence_state.geofence.webhook_url		# copy it over so we have a 'history' of it
 						})
 
 						fence.num_alerts_sent += 1
@@ -66,7 +73,7 @@ class GeofenceController < ApplicationController
 						
 						fence_alert = FenceAlert.new({
 							geofence: curr_fence_state.geofence,
-							webhook_url: 'http://gps.tools/wp-admin/admin-ajax.php?action=Geofence/alert_webhook'
+							webhook_url: curr_fence_state.geofence.webhook_url		# copy it over so we have a 'history' of it
 						})
 
 						fence.num_alerts_sent += 1
@@ -94,14 +101,14 @@ class GeofenceController < ApplicationController
 			num = i
 		end
 
-	#	last_location_msg_checked.save
+		last_location_msg_checked.save
 
 		render :text => "processed #{num} location messages"
 	end
 
 	# run the workers
 	def work
-		FenceAlert.where(processed_stage:0).limit(1).each do |alert|
+		FenceAlert.where(processed_stage:0).order('id').each do |alert|
 
 			# mark it as 'being processed'
 			alert.processed_stage = 1

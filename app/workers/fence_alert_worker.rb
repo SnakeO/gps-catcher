@@ -16,6 +16,7 @@ class FenceAlertWorker
 				pg_geofence_id: alert.geofence.id,
 				lat: alert.fence_state.location_msg.point.latitude,
 				lng: alert.fence_state.location_msg.point.longitude,
+				occurred_at: alert.fence_state.occurred_at.to_s # todo: format this
 			})
 
 			alert.response_code = response.code

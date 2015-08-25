@@ -2,6 +2,7 @@ class SpotTraceController < ApplicationController
 
 	skip_before_action :verify_authenticity_token
 
+	"""
 	def work
 		SpotTraceMessage.where(processed_stage:0).each do |message|
 			
@@ -18,6 +19,7 @@ class SpotTraceController < ApplicationController
 
 		render :text => 'done'
 	end
+	"""
 
 	# receive a message
 	def msg
@@ -40,6 +42,7 @@ class SpotTraceController < ApplicationController
 			msg.raw = request.raw_post
 			msg.status = 'malformed'
 			msg.extra = "#{e}"
+			msg.processed_stage = -1
 			msg.save
 
 			return render :text =>  "malformed xml: #{e}"
@@ -49,7 +52,10 @@ class SpotTraceController < ApplicationController
 		msg.raw = doc.to_s
 		msg.status = 'ok'
 		msg.extra = nil
+		msg.processed_stage = 1
 		msg.save
+
+		SpotTraceWorker.perform_async(msg.raw, msg.id)
 
 		render :text => 'ok'
 	end

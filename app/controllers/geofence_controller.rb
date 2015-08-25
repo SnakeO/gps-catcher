@@ -60,6 +60,7 @@ class GeofenceController < ApplicationController
 						puts "\tlast_fence_state: #{last_fence_state.state} @ #{last_fence_state.occurred_at}"
 
 						fence_alert = FenceAlert.new({
+							processed_stage: 1,
 							geofence: curr_fence_state.geofence,
 							webhook_url: curr_fence_state.geofence.webhook_url		# copy it over so we have a 'history' of it
 						})
@@ -72,6 +73,7 @@ class GeofenceController < ApplicationController
 						puts "ALERT - #{curr_fence_state.esn} EXITED FENCE #{curr_fence_state.geofence_id} @ #{curr_fence_state.occurred_at} (#{fence.alert_type})"
 						
 						fence_alert = FenceAlert.new({
+							processed_stage: 1,
 							geofence: curr_fence_state.geofence,
 							webhook_url: curr_fence_state.geofence.webhook_url		# copy it over so we have a 'history' of it
 						})
@@ -84,6 +86,7 @@ class GeofenceController < ApplicationController
 					if fence_alert != nil
 						fence_alert.fence_state = curr_fence_state
 						fence_alert.save 
+						FenceAlertWorker.perform_async(fence_alert.id)
 					end
 
 					fence.save
@@ -106,6 +109,7 @@ class GeofenceController < ApplicationController
 		render :text => "processed #{num} location messages"
 	end
 
+	"""
 	# run the workers
 	def work
 		FenceAlert.where(processed_stage:0).order('id').each do |alert|
@@ -119,5 +123,6 @@ class GeofenceController < ApplicationController
 
 		render :text => 'done'
 	end
+	"""
 
 end

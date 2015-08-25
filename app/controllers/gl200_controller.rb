@@ -2,6 +2,7 @@ class Gl200Controller < ApplicationController
 
 	skip_before_action :verify_authenticity_token
 
+	"""
 	def work
 		Gl200Message.where(processed_stage:0).each do |message|
 			
@@ -18,6 +19,7 @@ class Gl200Controller < ApplicationController
 
 		render :text => 'done'
 	end
+	"""
 
 	# receive a message
 	def msg
@@ -26,7 +28,10 @@ class Gl200Controller < ApplicationController
 		msg.raw = request.raw_post
 		msg.status = 'ok'
 		msg.extra = nil
+		msg.processed_stage = 1
 		msg.save
+
+		Gl200Worker.perform_async(msg.raw, msg.id)
 
 		render :text => 'ok'
 	end

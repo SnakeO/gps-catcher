@@ -43,6 +43,8 @@ class Gl200Worker
 				success = handlePositionReport header_type, fields, origin_message_id
 			elsif header_type == 'GTGSM'
 				# The report of the information of the service cell and neighbor cells
+			elsif header_type == 'GTINF'
+				# general information report (contains battery info, ignition/movement state, last GPS fix time, mileage)
 			else
 				raise "Unknown message header_type #{header_type}"
 			end

@@ -4,6 +4,7 @@ class GlobalstarController < ApplicationController
 
 	skip_before_action :verify_authenticity_token
 
+	"""
 	def work
 		StuMessage.where(processed_stage:0).each do |stu_message|
 			
@@ -20,6 +21,7 @@ class GlobalstarController < ApplicationController
 
 		render :text => 'done'
 	end
+	"""
 
 	# STU message
 	def stu
@@ -34,6 +36,7 @@ class GlobalstarController < ApplicationController
 			msg.raw = request.raw_post
 			msg.status = 'malformed'
 			msg.extra = "#{e}"
+			msg.processed_stage = -1
 			msg.save
 
 			return render :text => stuResponse('FAIL', "malformed xml: #{e}", msg.id)
@@ -42,7 +45,10 @@ class GlobalstarController < ApplicationController
 		msg = StuMessage.new
 		msg.raw = doc.to_s
 		msg.status = 'ok'
+		msg.processed_stage = 1
 		msg.save
+
+		GlobalstarWorker.perform_async(msg.raw, msg.id)
 
 		render :text => stuResponse('PASS', 'STU Message OK', msg.id)
 	end

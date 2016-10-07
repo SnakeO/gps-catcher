@@ -3,17 +3,28 @@ Rails.application.routes.draw do
   post 'globalstar/stu'
   post 'globalstar/prv'
 
-  get 'globalstar/work'
-  get 'globalstar/test_port_forwarding'
-
-  get 'gl200/work'
-  post 'gl200/msg'
-
-  get 'spot_trace/work'
-  post 'spot_trace/msg'
-
   get 'geofence/check'
-  get 'geofence/work'
+
+  post 'gl200/msg'
+  post 'gl300/msg'
+  get 'gl300/work'
+  post 'spot_trace/msg'
+  post 'gps306a/msg'
+  post 'xexun_tk1022/msg'
+  post 'smart_bdgps/msg'
+
+  # =+++++ API +++++=
+  get '/v1/device/gl200/decode' => 'api/v1/device/gl200#decode'
+  post '/v1/device/gl200/decode' => 'api/v1/device/gl200#decode'
+
+  get '/v1/device/spot/decode' => 'api/v1/device/spot#decode'
+  post '/v1/device/spot/decode' => 'api/v1/device/spot#decode'
+
+  get '/v1/device/smart_one_b/decode' => 'api/v1/device/smart_one_b#decode'
+  post '/v1/device/smart_one_b/decode' => 'api/v1/device/smart_one_b#decode'
+
+  get '/v1/device/gps306a/decode' => 'api/v1/device/gps306a#decode'
+  post '/v1/device/gps306a/decode' => 'api/v1/device/gps306a#decode'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

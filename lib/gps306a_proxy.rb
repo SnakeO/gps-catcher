@@ -1,14 +1,14 @@
 ###
-# This class listens for incoming TCP connections from the GL200, and proxies the message to an HTTP endpoint
+# This class listens for incoming TCP connections from the GPS306A, and proxies the message to an HTTP endpoint
 ###
 
 require 'net/http'
 
 remote_host = 'data.gps.tools'
 remote_port = 80
-remote_uri = 'http://data.gps.tools/gl200/msg'
+remote_uri = 'http://data.gps.tools/gps306a/msg'
 
-listen_port = 41200
+listen_port = 3064
 max_threads = 10000
 
 threads = []
@@ -52,6 +52,7 @@ while true
 						}
 
 						puts "Response: #{res}"
+						client_socket.write "ok"
 
 					end
 				rescue EOFError
@@ -75,16 +76,3 @@ while true
 		threads = threads.select { |t| t.alive? ? true : (t.join; false) }
 	end
 end
-
-### fix path, uncomment, copy and paste into /etc/init/gl200_proxy.conf ###
-### service gl200_proxy start|stop|status ###
-# # GL200 proxy service
-
-# description     "GL200 Proxy Server"
-# author          "GPS.Tools"
-
-# start on runlevel [2345]
-# stop on starting rc RUNLEVEL=[016]
-
-# respawn
-# exec /usr/bin/ruby /home/raco1/domains/ror.raco1.websitesonwheels.net/public_html/lib/gl200_proxy.rb

@@ -36,7 +36,7 @@ gem 'puma'
 gem 'net-ssh-gateway'
 gem 'execjs'
 gem 'nokogiri'
-gem 'mysql2'
+gem 'mysql2', '~> 0.3.18'
 gem 'pg'
 gem 'activerecord-postgis-adapter', "3.0.0.beta1"
 gem 'sidekiq'

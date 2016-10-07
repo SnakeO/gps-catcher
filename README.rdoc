@@ -9,6 +9,29 @@ Things you may want to cover:
 
 * System dependencies
 
+We are using puma-manager
+	config files: 
+		/etc/puma.conf
+		/etc/init/puma.conf
+		/etc/init/puma-manager.conf
+
+	service puma-manager status
+	service puma-manager restart
+
+	- changes automatically reflect.. no need to restart after making changes to files
+
+nginx passes ruby requests to puma
+	- we listen on private IP in the nginx site-enabled config
+
+sidekiq daemon
+	config files:
+		/etc/init/sidekiq.conf
+
+	service sidekiq status
+	service sidekiq restart
+
+	- restart sidekiq after pushing changes that affect background workers
+
 * Configuration
 
 * Database creation

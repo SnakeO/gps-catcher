@@ -24,7 +24,7 @@ class Gl200Worker
 			csv.remove! '$'
 
 			# split into components
-			fields = csv.split ','
+			fields = csv.split(',', -1)
 			header = fields.shift.split ':'
 
 			header_via = header[0]

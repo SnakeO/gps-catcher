@@ -38,20 +38,23 @@ class Gl200Worker
 
 			position_report_headers = ['GTFRI', 'GTGEO', 'GTSPD', 'GTSOS', 'GTRTL', 'GTPNL', 'GTNMR', 'GTDIS', 'GTDOG', 'GTIGL', 'GTPFL']
 
+			extra = nil
 			if position_report_headers.include? header_type
 				# timed report, or if a user turned around (if that feature is enabled)
 				success = handlePositionReport header_type, fields, origin_message_id
 			elsif header_type == 'GTGSM'
 				# The report of the information of the service cell and neighbor cells
+				extra = "ignore GTGSM"
 			elsif header_type == 'GTINF'
 				# general information report (contains battery info, ignition/movement state, last GPS fix time, mileage)
+				extra = "ignore GTINF"
 			else
 				raise "Unknown message header_type #{header_type}"
 			end
 
 			# back to stage 0 if it was unsuccessful
 			msg_obj.processed_stage = success ? 2 : 0
-			msg_obj.extra = success ? 'success' : '1 or more parsed messages failed'	
+			msg_obj.extra = success ? 'success' : (extra ? extra : '1 or more parsed messages failed')
 
 		rescue Exception => e
 

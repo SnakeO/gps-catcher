@@ -20,9 +20,9 @@ if !defined? Rails
 
 	require 'net/http'
 
-	remote_host = 'data.gps.tools'
+	remote_host = 'data.gpstoolsonline.org'
 	remote_port = 80
-	remote_uri = 'http://data.gps.tools/gl300/msg'
+	remote_uri = 'http://data.gpstoolsonline.org/gl300/msg'
 
 	listen_port = 41300
 	max_threads = 10000

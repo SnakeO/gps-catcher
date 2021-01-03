@@ -19,9 +19,9 @@ if !defined? Rails
 
 	require 'net/http'
 
-	remote_host = 'data.gps.tools'
+	remote_host = 'data.gpstoolsonline.org'
 	remote_port = 80
-	remote_uri = 'http://data.gps.tools/xexun_tk1022/msg'
+	remote_uri = 'http://data.gpstoolsonline.org/xexun_tk1022/msg'
 
 	listen_port = 11022
 	max_threads = 10000

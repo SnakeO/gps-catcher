@@ -1,20 +1,20 @@
 ###
-# This class listens for incoming TCP connections from the GPS306A, and proxies the message to an HTTP endpoint
+# This class listens for incoming TCP connections from the GL300MA, and proxies the message to an HTTP endpoint
 ###
 
-# # Smart BDGPS proxy service -- save this in /etc/init/smart_bdgps_proxy.conf
-# # service start smart_bdgps_proxy
+# # GL300MA proxy service -- save this in /etc/init/gl300ma_proxy.conf
+# # service start gl300ma_proxy
 
-# description     "Smart BDGPS Proxy Server"
+# description     "GL300MA Proxy Server"
 # author          "GPS.Tools"
 
 # start on runlevel [2345]
 # stop on starting rc RUNLEVEL=[016]
 
 # respawn
-# exec /usr/bin/ruby /home/raco1/domains/ror.raco1.websitesonwheels.net/public_html/app/modules/smart/bdgps/proxy.rb
+# exec /usr/bin/ruby /home/raco1/domains/ror.raco1.websitesonwheels.net/public_html/app/modules/queclink/gl300ma/proxy.rb
 
-# Ruby on Rails will auto-load this file.. I assume because it's in the same directory as the other xexun modules?
+# Ruby on Rails will auto-load this file.. I assume because it's in the same directory as the other ror modules?
 # But we only want to run this file standalone
 if !defined? Rails
 
@@ -22,9 +22,9 @@ if !defined? Rails
 
 	remote_host = 'data.gpstoolsonline.org'
 	remote_port = 80
-	remote_uri = 'http://data.gpstoolsonline.org/smart_bdgps/msg'
+	remote_uri = 'http://data.gpstoolsonline.org/gl300ma/msg'
 
-	listen_port = 63502
+	listen_port = 41301
 	max_threads = 10000
 
 	threads = []

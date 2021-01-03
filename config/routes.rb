@@ -6,8 +6,11 @@ Rails.application.routes.draw do
   get 'geofence/check'
 
   post 'gl200/msg'
+  post 'gl200/sms'
   post 'gl300/msg'
   get 'gl300/work'
+  post 'gl300ma/msg'
+  post 'gl300ma/sms'
   post 'spot_trace/msg'
   post 'gps306a/msg'
   post 'xexun_tk1022/msg'

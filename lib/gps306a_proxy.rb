@@ -4,9 +4,9 @@
 
 require 'net/http'
 
-remote_host = 'data.gps.tools'
+remote_host = 'data.gpstoolsonline.org'
 remote_port = 80
-remote_uri = 'http://data.gps.tools/gps306a/msg'
+remote_uri = 'http://data.gpstoolsonline.org/gps306a/msg'
 
 listen_port = 3064
 max_threads = 10000

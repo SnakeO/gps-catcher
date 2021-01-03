@@ -36,4 +36,19 @@ class Gl200Controller < ApplicationController
 		render :text => 'ok'
 	end
 
+	# process an sms
+	def sms
+
+		msg = Gl200Message.new
+		msg.raw = self.params[:Body]
+		msg.status = 'ok'
+		msg.extra = nil
+		msg.processed_stage = 1
+		msg.save
+
+		Gl200Worker.perform_async(msg.raw, msg.id)
+
+		render :text => 'ok'
+	end
+
 end

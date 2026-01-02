@@ -37,6 +37,18 @@
 # Bundler vendor directory
 /vendor/bundle
 
+# Gem-generated binstubs (keep only Rails core: rails, rake, bundle, setup)
+/bin/spring
+/bin/coderay
+/bin/listen
+/bin/rackup
+/bin/rougify
+/bin/sidekiq
+/bin/sidekiqmon
+/bin/sprockets
+/bin/thor
+/bin/tilt
+
 # Gem build artifacts
 /build_info
 /cache

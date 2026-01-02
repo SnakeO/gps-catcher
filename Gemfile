@@ -60,3 +60,10 @@ group :development, :test do
 #  gem 'puma_auto_tune'
 end
 
+group :test do
+  gem 'minitest-reporters'
+  gem 'webmock'
+  gem 'mocha'
+  gem 'database_cleaner'
+end
+

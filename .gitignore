@@ -33,3 +33,13 @@
 
 # Coverage reports
 /coverage
+
+# Bundler vendor directory
+/vendor/bundle
+
+# Gem build artifacts
+/build_info
+/cache
+/extensions
+/gems
+/specifications

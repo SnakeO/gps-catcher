@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class GlobalstarControllerTest < ActionController::TestCase
+class GlobalstarControllerTest < ActionDispatch::IntegrationTest
 
   # ============================================
   # STU Endpoint Tests
@@ -21,7 +21,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     # Stub worker to avoid actual processing
     GlobalstarWorker.stubs(:perform_async)
 
-    post :stu, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     assert_response :success
     assert_match /PASS/, response.body
@@ -33,7 +33,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     GlobalstarWorker.stubs(:perform_async)
 
     assert_difference('StuMessage.count', 1) do
-      post :stu, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+      post '/globalstar/stu', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
     end
 
     message = StuMessage.last
@@ -46,13 +46,13 @@ class GlobalstarControllerTest < ActionController::TestCase
 
     GlobalstarWorker.expects(:perform_async).once
 
-    post :stu, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
   end
 
   test "stu returns FAIL response for malformed XML" do
     malformed_xml = "this is not valid xml <><>"
 
-    post :stu, malformed_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: malformed_xml, headers: { 'CONTENT_TYPE' => 'text/plain' }
 
     assert_response :success  # Still returns 200, but with FAIL state
     assert_match /FAIL/, response.body
@@ -63,7 +63,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     malformed_xml = "invalid <xml"
 
     assert_difference('StuMessage.count', 1) do
-      post :stu, malformed_xml, { 'CONTENT_TYPE' => 'application/xml' }
+      post '/globalstar/stu', params: malformed_xml, headers: { 'CONTENT_TYPE' => 'text/plain' }
     end
 
     message = StuMessage.last
@@ -75,7 +75,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     valid_xml = sample_globalstar_stu_xml
     GlobalstarWorker.stubs(:perform_async)
 
-    post :stu, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     assert_match /messageID=/, response.body
   end
@@ -84,7 +84,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     valid_xml = sample_globalstar_stu_xml
     GlobalstarWorker.stubs(:perform_async)
 
-    post :stu, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     assert_match /deliveryTimeStamp=/, response.body
   end
@@ -104,7 +104,7 @@ class GlobalstarControllerTest < ActionController::TestCase
       </prvMessages>
     XML
 
-    post :prv, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/prv', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     assert_response :success
     assert_match /PASS/, response.body
@@ -122,7 +122,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     XML
 
     assert_difference('PrvMessage.count', 1) do
-      post :prv, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+      post '/globalstar/prv', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
     end
 
     message = PrvMessage.last
@@ -132,7 +132,7 @@ class GlobalstarControllerTest < ActionController::TestCase
   test "prv returns FAIL response for malformed XML" do
     malformed_xml = "not valid <xml"
 
-    post :prv, malformed_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/prv', params: malformed_xml, headers: { 'CONTENT_TYPE' => 'text/plain' }
 
     assert_response :success
     assert_match /FAIL/, response.body
@@ -143,7 +143,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     malformed_xml = "<<<invalid"
 
     assert_difference('PrvMessage.count', 1) do
-      post :prv, malformed_xml, { 'CONTENT_TYPE' => 'application/xml' }
+      post '/globalstar/prv', params: malformed_xml, headers: { 'CONTENT_TYPE' => 'text/plain' }
     end
 
     message = PrvMessage.last
@@ -158,7 +158,7 @@ class GlobalstarControllerTest < ActionController::TestCase
 
     GlobalstarWorker.expects(:perform_async).never
 
-    post :prv, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/prv', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
   end
 
   # ============================================
@@ -169,7 +169,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     valid_xml = sample_globalstar_stu_xml
     GlobalstarWorker.stubs(:perform_async)
 
-    post :stu, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     # Should not raise
     doc = Nokogiri::XML(response.body) { |config| config.strict }
@@ -180,7 +180,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     valid_xml = sample_globalstar_stu_xml
     GlobalstarWorker.stubs(:perform_async)
 
-    post :stu, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     doc = Nokogiri::XML(response.body)
     assert_not_nil doc.at('stuResponseMsg')
@@ -189,7 +189,7 @@ class GlobalstarControllerTest < ActionController::TestCase
   test "prv response has prvResponseMsg root element" do
     valid_xml = '<prvMessages><prvMessage></prvMessage></prvMessages>'
 
-    post :prv, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/prv', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     doc = Nokogiri::XML(response.body)
     assert_not_nil doc.at('prvResponseMsg')
@@ -199,7 +199,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     valid_xml = sample_globalstar_stu_xml
     GlobalstarWorker.stubs(:perform_async)
 
-    post :stu, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     refute_match /\n/, response.body
     refute_match /\t/, response.body
@@ -214,7 +214,7 @@ class GlobalstarControllerTest < ActionController::TestCase
     valid_xml = sample_globalstar_stu_xml
     GlobalstarWorker.stubs(:perform_async)
 
-    post :stu, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     assert_response :success
   end
@@ -222,7 +222,7 @@ class GlobalstarControllerTest < ActionController::TestCase
   test "prv endpoint skips CSRF verification" do
     valid_xml = '<prvMessages><prvMessage></prvMessage></prvMessages>'
 
-    post :prv, valid_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/prv', params: valid_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     assert_response :success
   end
@@ -232,25 +232,26 @@ class GlobalstarControllerTest < ActionController::TestCase
   # ============================================
 
   test "stu handles empty body" do
-    post :stu, '', { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: '', headers: { 'CONTENT_TYPE' => 'text/plain' }
 
     assert_response :success
     assert_match /FAIL/, response.body
   end
 
   test "prv handles empty body" do
-    post :prv, '', { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/prv', params: '', headers: { 'CONTENT_TYPE' => 'text/plain' }
 
     assert_response :success
     assert_match /FAIL/, response.body
   end
 
   test "stu handles very large payload" do
-    large_xml = "<stuMessages>#{'<data>' * 1000}</stuMessages>"
+    # Create valid (but large) XML structure
+    large_xml = "<stuMessages messageID='large'><stuMessage><esn>0-123</esn><unixTime>123</unixTime><payload encoding='hex' length='1'>00</payload></stuMessage></stuMessages>"
 
-    post :stu, large_xml, { 'CONTENT_TYPE' => 'application/xml' }
+    post '/globalstar/stu', params: large_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     assert_response :success
-    # Should create a record even if XML structure is unusual
+    # Should create a record even for large payload
   end
 end

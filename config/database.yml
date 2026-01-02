@@ -1,32 +1,41 @@
 # PostgreSQL with PostGIS for all environments
 # Phase 6 consolidation - single database for all models
-default: &default
+
+development:
   adapter: postgis
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   host: localhost
   port: 5432
-
-development:
-  <<: *default
   database: gps_development
   username: <%= ENV.fetch("DATABASE_USERNAME") { ENV["USER"] } %>
 
 test:
-  <<: *default
+  adapter: postgis
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: localhost
+  port: 5432
   database: gps_test
   username: <%= ENV.fetch("DATABASE_USERNAME") { ENV["USER"] } %>
 
 production:
-  <<: *default
+  adapter: postgis
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: <%= ENV.fetch("DATABASE_HOST") { "gps-db" } %>
+  port: 5432
   database: gps
   username: gps
   password: <%= ENV.fetch("DATABASE_PASSWORD") { "Track.all.the.things!" } %>
-  host: <%= ENV.fetch("DATABASE_HOST") { "gps-db" } %>
 
 # Legacy pg connection - kept for backwards compatibility during migration
 # TODO: Remove after Phase 6 consolidation is complete
 pg:
-  <<: *default
+  adapter: postgis
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: localhost
+  port: 5432
   database: gps_test
   username: <%= ENV.fetch("DATABASE_USERNAME") { ENV["USER"] } %>

@@ -249,6 +249,8 @@ class GlobalstarControllerTest < ActionDispatch::IntegrationTest
     # Create valid (but large) XML structure
     large_xml = "<stuMessages messageID='large'><stuMessage><esn>0-123</esn><unixTime>123</unixTime><payload encoding='hex' length='1'>00</payload></stuMessage></stuMessages>"
 
+    GlobalstarWorker.stubs(:perform_async)
+
     post '/globalstar/stu', params: large_xml, headers: { 'CONTENT_TYPE' => 'application/xml' }
 
     assert_response :success

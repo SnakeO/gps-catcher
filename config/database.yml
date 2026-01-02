@@ -1,35 +1,32 @@
-# SQLite version 3.x
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
-#
+# PostgreSQL with PostGIS for all environments
+# Phase 6 consolidation - single database for all models
 default: &default
-  adapter: mysql2
-  encoding: utf8
-  database: raco1
-  username: mysql.raco1
-  password: raco1.mysql
-  host: raco1
-  port: 3306
+  adapter: postgis
+  encoding: unicode
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+  host: localhost
+  port: 5432
 
 development:
   <<: *default
+  database: gps_development
+  username: <%= ENV.fetch("DATABASE_USERNAME") { ENV["USER"] } %>
 
-# Warning: The database defined as "test" will be erased and
-# re-generated from your development database when you run "rake".
-# Do not set this db to the same as development or production.
 test:
   <<: *default
+  database: gps_test
+  username: <%= ENV.fetch("DATABASE_USERNAME") { ENV["USER"] } %>
 
 production:
   <<: *default
-
-pg:
-  adapter: postgis
-  encoding: utf8
   database: gps
   username: gps
-  password: Track.all.the.things!
-  host: gps-db
-  port: 5432
+  password: <%= ENV.fetch("DATABASE_PASSWORD") { "Track.all.the.things!" } %>
+  host: <%= ENV.fetch("DATABASE_HOST") { "gps-db" } %>
+
+# Legacy pg connection - kept for backwards compatibility during migration
+# TODO: Remove after Phase 6 consolidation is complete
+pg:
+  <<: *default
+  database: gps_test
+  username: <%= ENV.fetch("DATABASE_USERNAME") { ENV["USER"] } %>

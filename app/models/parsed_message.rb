@@ -28,7 +28,7 @@ class ParsedMessage < ActiveRecord::Base
 
 	def self.findExisting(external_message_id, source, value, meta=nil)
 		hash_id = ParsedMessage.makeHashID(external_message_id, source, value, meta)
-		return ParsedMessage.find_by_message_id hash_id
+		return ParsedMessage.find_by(message_id: hash_id)
 	end
 
 	# save to postgres

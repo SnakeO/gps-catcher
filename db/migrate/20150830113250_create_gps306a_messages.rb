@@ -1,4 +1,4 @@
-class CreateGps306aMessages < ActiveRecord::Migration
+class CreateGps306aMessages < ActiveRecord::Migration[4.2]
   def change
     create_table :gps306a_messages do |t|
       t.text :raw

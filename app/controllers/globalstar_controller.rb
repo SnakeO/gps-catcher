@@ -19,7 +19,7 @@ class GlobalstarController < ApplicationController
 
 		end
 
-		render :text => 'done'
+		render plain: 'done'
 	end
 	"""
 
@@ -39,7 +39,7 @@ class GlobalstarController < ApplicationController
 			msg.processed_stage = -1
 			msg.save
 
-			return render :text => stuResponse('FAIL', "malformed xml: #{e}", msg.id)
+			return render plain: stuResponse('FAIL', "malformed xml: #{e}", msg.id)
 		end
 
 		msg = StuMessage.new
@@ -50,7 +50,7 @@ class GlobalstarController < ApplicationController
 
 		GlobalstarWorker.perform_async(msg.raw, msg.id)
 
-		render :text => stuResponse('PASS', 'STU Message OK', msg.id)
+		render plain: stuResponse('PASS', 'STU Message OK', msg.id)
 	end
 	
 	def stuResponse(state, message='', message_id)
@@ -90,7 +90,7 @@ class GlobalstarController < ApplicationController
 			msg.extra = "#{e}"
 			msg.save
 
-			return render :text => prvResponse('FAIL', "malformed xml: #{e}", msg.id)
+			return render plain: prvResponse('FAIL', "malformed xml: #{e}", msg.id)
 		end
 
 		msg = PrvMessage.new
@@ -98,7 +98,7 @@ class GlobalstarController < ApplicationController
 		msg.status = 'ok'
 		msg.save
 
-		render :text => prvResponse('PASS', 'PRV Message OK', msg.id)
+		render plain: prvResponse('PASS', 'PRV Message OK', msg.id)
 	end
 
 	def prvResponse(state, message='', message_id)

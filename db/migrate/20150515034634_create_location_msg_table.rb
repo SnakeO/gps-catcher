@@ -1,8 +1,9 @@
-class CreateLocationMsgTable < ActiveRecord::Migration
+class CreateLocationMsgTable < ActiveRecord::Migration[4.2]
 
-  def connection
-     LocationMsg.connection
-  end
+  # Commented out for single-database setup (Phase 6 consolidation)
+  # def connection
+  #    LocationMsg.connection
+  # end
 
   def change
     create_table :location_msgs do |t|

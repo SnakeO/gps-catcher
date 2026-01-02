@@ -1,4 +1,4 @@
-class CreateGl200Messages < ActiveRecord::Migration
+class CreateGl200Messages < ActiveRecord::Migration[4.2]
   def change
     create_table :gl200_messages do |t|
       t.text :raw

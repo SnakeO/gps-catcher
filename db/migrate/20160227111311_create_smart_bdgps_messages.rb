@@ -1,5 +1,5 @@
 # rails g migration CreateSmartBdgpsMessages raw:text, status:string, extra:text, processed_stage:integer:index
-class CreateSmartBdgpsMessages < ActiveRecord::Migration
+class CreateSmartBdgpsMessages < ActiveRecord::Migration[4.2]
   def change
     create_table :smart_bdgps_messages do |t|
       t.text :raw

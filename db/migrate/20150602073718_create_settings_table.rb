@@ -1,8 +1,9 @@
-class CreateSettingsTable < ActiveRecord::Migration
+class CreateSettingsTable < ActiveRecord::Migration[4.2]
 
-   def connection
-     Setting.connection
-  end
+  # Commented out for single-database setup (Phase 6 consolidation)
+  # def connection
+  #   Setting.connection
+  # end
 
   def change
     create_table :settings do |t|

@@ -8,7 +8,7 @@ class Gps306aController < ApplicationController
 
 		# ignore the 'heartbeat' it sends when it's just the IMEI
 		if request.raw_post.split(',').length == 1
-			render :text => 'ok'
+			render plain: 'ok'
 			return
 		end
 
@@ -21,7 +21,7 @@ class Gps306aController < ApplicationController
 
 		Gps306aWorker.perform_async(msg.id)
 
-		render :text => 'ok'
+		render plain: 'ok'
 	end
 
 end

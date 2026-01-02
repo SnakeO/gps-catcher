@@ -1,5 +1,5 @@
 # rails g migration CreateXexunTk1022Messages raw:text, status:string, extra:text, processed_stage:integer:index
-class CreateXexunTk1022Messages < ActiveRecord::Migration
+class CreateXexunTk1022Messages < ActiveRecord::Migration[4.2]
   def change
     create_table :xexun_tk1022_messages do |t|
       t.text :raw

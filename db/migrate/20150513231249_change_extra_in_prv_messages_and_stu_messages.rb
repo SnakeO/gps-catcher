@@ -1,4 +1,4 @@
-class ChangeExtraInPrvMessagesAndStuMessages < ActiveRecord::Migration
+class ChangeExtraInPrvMessagesAndStuMessages < ActiveRecord::Migration[4.2]
   def change
       change_table :stu_messages do |t|
          t.change :extra, :text

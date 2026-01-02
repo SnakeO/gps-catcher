@@ -1,7 +1,8 @@
-class CreateFenceAlert < ActiveRecord::Migration
-  def connection
-     FenceAlert.connection
-  end
+class CreateFenceAlert < ActiveRecord::Migration[4.2]
+  # Commented out for single-database setup (Phase 6 consolidation)
+  # def connection
+  #   FenceAlert.connection
+  # end
 
   def change
     create_table :fence_alerts do |t|

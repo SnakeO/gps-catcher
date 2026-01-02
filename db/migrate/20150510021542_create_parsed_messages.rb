@@ -1,4 +1,4 @@
-class CreateParsedMessages < ActiveRecord::Migration
+class CreateParsedMessages < ActiveRecord::Migration[4.2]
   def change
     create_table :parsed_messages do |t|
 

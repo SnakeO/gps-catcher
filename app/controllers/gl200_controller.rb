@@ -17,7 +17,7 @@ class Gl200Controller < ApplicationController
 
 		end
 
-		render :text => 'done'
+		render plain: 'done'
 	end
 	"""
 
@@ -33,7 +33,7 @@ class Gl200Controller < ApplicationController
 
 		Gl200Worker.perform_async(msg.raw, msg.id)
 
-		render :text => 'ok'
+		render plain: 'ok'
 	end
 
 	# process an sms
@@ -48,7 +48,7 @@ class Gl200Controller < ApplicationController
 
 		Gl200Worker.perform_async(msg.raw, msg.id)
 
-		render :text => 'ok'
+		render plain: 'ok'
 	end
 
 end

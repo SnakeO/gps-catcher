@@ -15,7 +15,7 @@ class SmartBdgpsController < ApplicationController
 
 		Smart::Bdgps::Worker.perform_async(msg.id)
 
-		render :text => 'ok'
+		render plain: 'ok'
 	end
 
 end

@@ -61,7 +61,8 @@ class Gl200DecoderTest < ActiveSupport::TestCase
 
     location_msg = messages.find { |m| m.source == 'location' }
     assert_not_nil location_msg, "Should include location message"
-    assert_equal '32.742800,-97.147099', location_msg.value
+    # Decoder uses to_f which removes trailing zeros: "32.742800".to_f => 32.7428
+    assert_equal '32.7428,-97.147099', location_msg.value
   end
 
   test "extracts battery message from position report" do
@@ -143,14 +144,18 @@ class Gl200DecoderTest < ActiveSupport::TestCase
   end
 
   test "parses occurred_at timestamp correctly" do
-    fields = create_position_report_fields(gps_time: '20150526000805')
+    # Use a time in the middle of the day to avoid timezone boundary issues
+    # Time.parse interprets the string in local timezone, then .utc converts it
+    fields = create_position_report_fields(gps_time: '20150526120000')
 
     messages = @decoder.positionReport(fields)
 
     location_msg = messages.find { |m| m.source == 'location' }
     assert_not_nil location_msg.occurred_at
+    # Verify basic timestamp structure (exact UTC value depends on local timezone)
     assert_equal 2015, location_msg.occurred_at.year
     assert_equal 5, location_msg.occurred_at.month
+    # The day should be 26 regardless of timezone since we're in the middle of the day
     assert_equal 26, location_msg.occurred_at.day
   end
 
@@ -200,29 +205,41 @@ class Gl200DecoderTest < ActiveSupport::TestCase
 
   test "returns existing location message if duplicate" do
     external_message_id = 'test-dedup-gl200'
-    lat = '32.742800'
-    lng = '-97.147099'
+    # Use the values as they will appear after to_f conversion
+    # Ruby's to_f removes trailing zeros: "32.742800".to_f.to_s => "32.7428"
+    lat_str = '32.742800'
+    lng_str = '-97.147099'
+    lat_float = lat_str.to_f   # 32.7428
+    lng_float = lng_str.to_f   # -97.147099
+
+    # The decoder calculates: confidence = (50 - gps_accuracy) / 50.0
+    # With default gps_accuracy of 2: (50 - 2) / 50.0 = 0.96
+    # Speed and altitude come from defaults: 0.0 and 196.5
     meta = { confidence: 0.96, speed: 0.0, altitude: 196.5, gps_accuracy: 2, odometer: '' }
 
-    # Create existing message
+    # Value must match exactly what decoder produces: "#{latitude.to_f},#{longitude.to_f}"
+    value = "#{lat_float},#{lng_float}"
+
+    # Create existing message with the exact hash that decoder will generate
     existing = ParsedMessage.create!(
       source: 'location',
-      value: "#{lat},#{lng}",
+      value: value,
       meta: meta.to_json,
       esn: '867844001851958',
-      message_id: ParsedMessage.makeHashID(external_message_id, 'location', "#{lat},#{lng}", meta.to_json)
+      message_id: ParsedMessage.makeHashID(external_message_id, 'location', value, meta.to_json)
     )
 
     fields = create_position_report_fields(
-      latitude: lat,
-      longitude: lng,
+      latitude: lat_str,
+      longitude: lng_str,
       external_message_id: external_message_id
     )
 
     messages = @decoder.positionReport(fields)
 
     location_msg = messages.find { |m| m.source == 'location' }
-    assert_equal existing.id, location_msg.id
+    assert_not_nil location_msg, "Should find location message"
+    assert_equal existing.id, location_msg.id, "Should return existing message for duplicate"
   end
 
   private

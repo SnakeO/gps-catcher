@@ -17,7 +17,7 @@ class SpotTraceController < ApplicationController
 
 		end
 
-		render :text => 'done'
+		render plain: 'done'
 	end
 	"""
 
@@ -45,7 +45,7 @@ class SpotTraceController < ApplicationController
 			msg.processed_stage = -1
 			msg.save
 
-			return render :text =>  "malformed xml: #{e}"
+			return render plain: "malformed xml: #{e}"
 		end
 
 		msg = SpotTraceMessage.new
@@ -57,7 +57,7 @@ class SpotTraceController < ApplicationController
 
 		SpotTraceWorker.perform_async(msg.raw, msg.id)
 
-		render :text => 'ok'
+		render plain: 'ok'
 	end
 
 end

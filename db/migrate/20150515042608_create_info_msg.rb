@@ -1,9 +1,10 @@
-class CreateInfoMsg < ActiveRecord::Migration
+class CreateInfoMsg < ActiveRecord::Migration[4.2]
 
-  def connection
-     InfoMsg.connection
-  end
-  
+  # Commented out for single-database setup (Phase 6 consolidation)
+  # def connection
+  #    InfoMsg.connection
+  # end
+
   def change
     create_table :info_msgs do |t|
       t.string :esn

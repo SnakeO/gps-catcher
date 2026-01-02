@@ -1,4 +1,4 @@
-class CreateSpotTraceMessages < ActiveRecord::Migration
+class CreateSpotTraceMessages < ActiveRecord::Migration[4.2]
   def change
     create_table :spot_trace_messages do |t|
       t.text :raw

@@ -158,8 +158,9 @@ class GlobalstarDecoderTest < ActiveSupport::TestCase
     msg_still = @decoder.getInMotionMsg(0)
 
     assert_equal 'is_in_motion', msg_moving.source
-    assert_equal 1, msg_moving.value
-    assert_equal 0, msg_still.value
+    # Values are stored as strings
+    assert_equal '1', msg_moving.value
+    assert_equal '0', msg_still.value
   end
 
   test "getLocationMsg returns nil for invalid GPS data" do
@@ -177,7 +178,8 @@ class GlobalstarDecoderTest < ActiveSupport::TestCase
 
     assert_not_nil msg
     assert_equal 'location', msg.source
-    assert_equal '32.742800,-97.147099', msg.value
+    # The value uses Ruby's to_s which doesn't include trailing zeros
+    assert_equal '32.7428,-97.147099', msg.value
   end
 
   # ============================================

@@ -1,8 +1,9 @@
-class CreateGeofences < ActiveRecord::Migration
+class CreateGeofences < ActiveRecord::Migration[4.2]
 
-   def connection
-     Geofence.connection
-   end
+  # Commented out for single-database setup (Phase 6 consolidation)
+  # def connection
+  #   Geofence.connection
+  # end
 
   def change
     create_table :geofences do |t|

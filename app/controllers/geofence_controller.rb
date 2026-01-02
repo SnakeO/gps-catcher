@@ -106,7 +106,7 @@ class GeofenceController < ApplicationController
 
 		last_location_msg_checked.save
 
-		render :text => "processed #{num} location messages"
+		render plain: "processed #{num} location messages"
 	end
 
 	"""
@@ -121,7 +121,7 @@ class GeofenceController < ApplicationController
 			FenceAlertWorker.perform_async(alert.id)
 		end
 
-		render :text => 'done'
+		render plain: 'done'
 	end
 	"""
 

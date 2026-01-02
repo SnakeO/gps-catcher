@@ -16,7 +16,7 @@ class Gl300Controller < ApplicationController
 
 		end
 
-		render :text => 'done'
+		render plain: 'done'
 	end
 
 	# receive a message
@@ -31,7 +31,7 @@ class Gl300Controller < ApplicationController
 
 		Queclink::Gl300::Worker.perform_async(msg.raw, msg.id)
 
-		render :text => 'ok'
+		render plain: 'ok'
 	end
 
 end

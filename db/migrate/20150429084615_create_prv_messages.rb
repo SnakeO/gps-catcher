@@ -1,4 +1,4 @@
-class CreatePrvMessages < ActiveRecord::Migration
+class CreatePrvMessages < ActiveRecord::Migration[4.2]
   def change
     create_table :prv_messages do |t|
       t.text :raw

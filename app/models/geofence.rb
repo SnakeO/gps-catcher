@@ -1,5 +1,6 @@
 class Geofence < ActiveRecord::Base
-	establish_connection :pg
+	# Commented out for single-database setup (Phase 6 consolidation)
+	# establish_connection :pg
 
    has_many :fence_alerts
    has_many :fence_states

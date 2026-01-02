@@ -1,29 +1,31 @@
 source 'https://rubygems.org'
 
-# Rails 6.1
-gem 'rails', '~> 6.1.7.10'
+ruby '3.2.9'
 
-# Database (PostgreSQL with PostGIS - consolidated in Phase 6)
-gem 'pg', '~> 1.4'
-gem 'activerecord-postgis-adapter', '~> 7.0'
+# Rails 7.0
+gem 'rails', '~> 7.0.8.6'
+
+# Database (PostgreSQL with PostGIS)
+gem 'pg', '~> 1.5'
+gem 'activerecord-postgis-adapter', '~> 8.0'
 gem 'rgeo', '~> 3.0'
 gem 'rgeo-activerecord', '~> 7.0'
 
 # Asset Pipeline
+gem 'sprockets-rails'
 gem 'sass-rails', '>= 6'
 gem 'uglifier', '>= 1.3.0'
-gem 'webpacker', '~> 4.0'
 gem 'turbolinks', '~> 5'
 gem 'jbuilder', '~> 2.11.0'
 
 # Server
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 6.0'
 
 # Background Jobs
-gem 'sidekiq', '~> 6.5'
+gem 'sidekiq', '~> 7.0'
 
 # Performance
-gem 'bootsnap', '>= 1.4.2', require: false
+gem 'bootsnap', require: false
 
 # Utilities
 gem 'ffi'

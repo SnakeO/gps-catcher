@@ -14,18 +14,19 @@ test:
   adapter: postgis
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: localhost
+  host: <%= ENV.fetch("DATABASE_HOST") { "localhost" } %>
   port: 5432
   database: gps_test
-  username: <%= ENV.fetch("DATABASE_USERNAME") { ENV["USER"] } %>
+  username: <%= ENV.fetch("DATABASE_USERNAME") { ENV["USER"] || "postgres" } %>
+  password: <%= ENV.fetch("DATABASE_PASSWORD") { "" } %>
 
 production:
   adapter: postgis
   encoding: unicode
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: <%= ENV.fetch("DATABASE_HOST") { "gps-db" } %>
+  host: <%= ENV["DATABASE_HOST"] %>
   port: 5432
-  database: gps
-  username: gps
-  password: <%= ENV.fetch("DATABASE_PASSWORD") { "Track.all.the.things!" } %>
+  database: <%= ENV.fetch("DATABASE_NAME") { "gps" } %>
+  username: <%= ENV["DATABASE_USERNAME"] %>
+  password: <%= ENV["DATABASE_PASSWORD"] %>
 

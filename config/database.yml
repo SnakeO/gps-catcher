@@ -29,13 +29,3 @@ production:
   username: gps
   password: <%= ENV.fetch("DATABASE_PASSWORD") { "Track.all.the.things!" } %>
 
-# Legacy pg connection - kept for backwards compatibility during migration
-# TODO: Remove after Phase 6 consolidation is complete
-pg:
-  adapter: postgis
-  encoding: unicode
-  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
-  host: localhost
-  port: 5432
-  database: gps_test
-  username: <%= ENV.fetch("DATABASE_USERNAME") { ENV["USER"] } %>

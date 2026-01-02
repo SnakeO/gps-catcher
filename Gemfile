@@ -1,13 +1,13 @@
 source 'https://rubygems.org'
 
-# Rails 6.0
-gem 'rails', '~> 6.0.6.1'
+# Rails 6.1
+gem 'rails', '~> 6.1.7.10'
 
 # Database (PostgreSQL with PostGIS - consolidated in Phase 6)
-gem 'pg', '~> 1.2.3'  # Compatible with Ruby 2.7
-gem 'activerecord-postgis-adapter', '~> 6.0'
-gem 'rgeo', '~> 2.0'
-gem 'rgeo-activerecord', '~> 6.0'
+gem 'pg', '~> 1.4'
+gem 'activerecord-postgis-adapter', '~> 7.0'
+gem 'rgeo', '~> 3.0'
+gem 'rgeo-activerecord', '~> 7.0'
 
 # Asset Pipeline
 gem 'sass-rails', '>= 6'
@@ -20,19 +20,19 @@ gem 'jbuilder', '~> 2.11.0'
 gem 'puma', '~> 5.0'
 
 # Background Jobs
-gem 'sidekiq', '~> 6.0'
+gem 'sidekiq', '~> 6.5'
 
 # Performance
 gem 'bootsnap', '>= 1.4.2', require: false
 
 # Utilities
-gem 'ffi', '~> 1.16.0'
+gem 'ffi'
 gem 'net-ssh-gateway'
-gem 'nokogiri', '~> 1.13.0'
-gem 'httparty', '~> 0.17'
+gem 'nokogiri'
+gem 'httparty'
 
 group :development, :test do
-  gem 'byebug', '~> 11.0', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'byebug', '~> 11.0', platforms: [:mri]
   gem 'awesome_print', require: 'ap'
   gem 'better_errors'
   gem 'binding_of_caller'
@@ -44,7 +44,6 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.3'
   gem 'spring'
-  gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 group :test do

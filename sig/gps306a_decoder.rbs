@@ -1,0 +1,18 @@
+# Type signature for Gps306aDecoder
+class Gps306aDecoder < BaseDecoder
+  type field_array = Array[String?]
+
+  def decode_location_message: (field_array fields) -> Array[ParsedMessage]
+
+  private
+
+  def parse_header_fields: (field_array fields) -> void
+  def parse_coordinates: (field_array fields) -> void
+  def build_messages: (field_array fields) -> Array[ParsedMessage]
+  def nmea_to_decimal: (String? nmea_value, String? hemisphere, Symbol coord_type) -> Float?
+  def parse_gps306a_time: (String? time_str) -> Time
+
+  @device_name: String?
+  @latitude: Float?
+  @longitude: Float?
+end

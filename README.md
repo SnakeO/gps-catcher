@@ -31,6 +31,7 @@ A robust GPS tracking and geofencing platform built with Ruby on Rails. Receives
 - **Background Jobs**: Sidekiq 7.0
 - **Web Server**: Puma 6.0
 - **Geospatial**: RGeo, activerecord-postgis-adapter
+- **Type Checking**: RBS (Ruby Signature)
 
 ## Architecture
 
@@ -64,7 +65,58 @@ app/
     ├── spot_trace_worker.rb
     ├── gps306a_worker.rb
     └── fence_alert_worker.rb
+sig/                      # RBS type signatures
+├── coordinates.rbs
+├── base_decoder.rbs
+├── globalstar_decoder.rbs
+├── gl200_decoder.rbs
+├── spot_trace_decoder.rbs
+├── gps306a_decoder.rbs
+├── parsed_message_factory.rbs
+├── fence_state_repository.rbs
+├── geofence_check_service.rbs
+└── xml_response_builder.rbs
 ```
+
+## Type Checking
+
+This project uses RBS (Ruby Signature) for static type definitions. Type signatures are in the `sig/` directory.
+
+### Validate type signatures
+
+```bash
+bundle exec rbs -I sig validate
+```
+
+### Type signature example
+
+```ruby
+# sig/coordinates.rbs
+class Coordinates
+  attr_reader latitude: Float?
+  attr_reader longitude: Float?
+
+  def initialize: (Float | String | nil, Float | String | nil) -> void
+  def valid?: () -> bool
+  def to_s: () -> String
+  def to_rgeo_point: (?factory: untyped?) -> untyped
+end
+```
+
+### Covered classes
+
+| Class | Signature File |
+|-------|----------------|
+| `Coordinates` | `sig/coordinates.rbs` |
+| `BaseDecoder` | `sig/base_decoder.rbs` |
+| `GlobalstarDecoder` | `sig/globalstar_decoder.rbs` |
+| `Gl200Decoder` | `sig/gl200_decoder.rbs` |
+| `SpotTraceDecoder` | `sig/spot_trace_decoder.rbs` |
+| `Gps306aDecoder` | `sig/gps306a_decoder.rbs` |
+| `ParsedMessageFactory` | `sig/parsed_message_factory.rbs` |
+| `FenceStateRepository` | `sig/fence_state_repository.rbs` |
+| `GeofenceCheckService` | `sig/geofence_check_service.rbs` |
+| `XmlResponseBuilder` | `sig/xml_response_builder.rbs` |
 
 ## Prerequisites
 

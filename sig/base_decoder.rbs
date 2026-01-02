@@ -1,0 +1,29 @@
+# Type signature for BaseDecoder
+class BaseDecoder
+  class DecodingError < StandardError
+  end
+
+  # Protected readers
+  attr_reader external_message_id: String?
+  attr_reader esn: String?
+  attr_reader occurred_at: Time?
+
+  # Protected setters
+  def set_external_message_id: (String? id) -> String?
+  def set_esn: (String? esn) -> String?
+  def set_occurred_at: (Time | String time) -> Time
+
+  # Message builders - return ParsedMessage or nil
+  def build_location_message: (latitude: Float | String, longitude: Float | String, ?meta: Hash[Symbol, untyped]) -> ParsedMessage?
+  def build_battery_message: (good: bool | String | Integer | Float) -> ParsedMessage
+  def build_battery_percentage_message: (percentage: Integer | Float | String) -> ParsedMessage
+  def build_power_message: (state: String | Integer) -> ParsedMessage
+  def build_motion_message: (in_motion: bool | Integer) -> ParsedMessage
+  def build_info_message: (source: String, value: String, ?meta: Hash[Symbol, untyped]?) -> ParsedMessage
+
+  private
+
+  def create_coordinates: (Float | String latitude, Float | String longitude) -> Coordinates?
+  def normalize_battery_value: (untyped value) -> bool
+  def apply_common_attributes: (ParsedMessage? message) -> void
+end

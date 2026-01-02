@@ -1,0 +1,20 @@
+# Type signature for GlobalstarDecoder
+class GlobalstarDecoder < BaseDecoder
+  type message_hash = Hash[Symbol, untyped]
+
+  def decode_stu_message: (message_hash message) -> Array[ParsedMessage]
+  def decode_prv_message: (message_hash message) -> Array[ParsedMessage]
+
+  private
+
+  def extract_common_fields: (message_hash message) -> void
+  def decode_payload: (String payload) -> Array[ParsedMessage]
+  def decode_standard_position: (String payload, Array[ParsedMessage] messages) -> void
+  def decode_extended_position: (String payload, Array[ParsedMessage] messages) -> void
+  def decode_latitude: (String bytes) -> Float
+  def decode_longitude: (String bytes) -> Float
+  def twos_complement: (Integer value, Integer bits) -> Integer
+  def extract_battery_state: (String payload) -> bool?
+  def extract_motion_state: (String payload) -> Integer?
+  def extract_power_state: (String payload) -> String?
+end

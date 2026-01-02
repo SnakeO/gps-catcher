@@ -1,0 +1,5 @@
+# Type stubs for Sidekiq workers
+
+class FenceAlertWorker
+  def self.perform_async: (Integer fence_alert_id) -> void
+end

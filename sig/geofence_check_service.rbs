@@ -1,0 +1,32 @@
+# Type signature for GeofenceCheckService
+class GeofenceCheckService
+  attr_reader messages_processed: Integer
+  attr_reader alerts_created: Integer
+
+  @fence_state_repository: FenceStateRepository
+
+  def initialize: (?fence_state_repository: FenceStateRepository) -> void
+
+  # Main entry point - processes all pending messages
+  # Returns count of messages processed
+  def call: () -> Integer
+
+  # Process a single location message against all its geofences
+  def process_message: (LocationMsg message) -> void
+
+  private
+
+  def check_fence: (LocationMsg message, Geofence fence) -> void
+  def skip_fence?: (LocationMsg message, Geofence fence) -> bool
+  def build_current_state: (Geofence fence, LocationMsg message, bool is_inside) -> FenceState
+
+  def create_alert_if_needed: (
+    Geofence fence,
+    FenceState current_state,
+    Symbol? transition,
+    FenceState last_state
+  ) -> void
+
+  def should_alert?: (Geofence fence, Symbol? transition, FenceState last_state) -> bool
+  def log_alert: (FenceState current_state, Symbol transition, FenceState last_state) -> void
+end

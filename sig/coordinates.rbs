@@ -1,0 +1,26 @@
+# Type signature for Coordinates value object
+class Coordinates
+  class InvalidCoordinatesError < StandardError
+  end
+
+  INVALID_COORDS: Array[Array[Float]]
+
+  attr_reader latitude: Float?
+  attr_reader longitude: Float?
+
+  def initialize: (Float | String | Numeric | nil latitude, Float | String | Numeric | nil longitude) -> void
+
+  def valid?: () -> bool
+  def to_s: () -> String
+  def to_a: () -> Array[Float?]
+  def to_h: () -> Hash[Symbol, Float?]
+  def ==: (untyped other) -> bool
+  def eql?: (untyped other) -> bool
+  def hash: () -> Integer
+  def to_rgeo_point: (?factory: untyped?) -> untyped
+
+  private
+
+  def normalize_coordinate: (untyped value) -> Float?
+  def validate!: () -> void
+end

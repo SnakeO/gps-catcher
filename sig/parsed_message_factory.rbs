@@ -1,0 +1,39 @@
+# Type signature for ParsedMessageFactory
+class ParsedMessageFactory
+  def self.location: (
+    external_message_id: String?,
+    coordinates: Coordinates,
+    ?meta: Hash[Symbol, untyped]
+  ) -> ParsedMessage
+
+  def self.battery: (
+    external_message_id: String?,
+    good: bool
+  ) -> ParsedMessage
+
+  def self.power: (
+    external_message_id: String?,
+    state: String | Integer
+  ) -> ParsedMessage
+
+  def self.motion: (
+    external_message_id: String?,
+    in_motion: Integer
+  ) -> ParsedMessage
+
+  def self.info: (
+    external_message_id: String?,
+    source: String,
+    value: String,
+    ?meta: Hash[Symbol, untyped]?
+  ) -> ParsedMessage
+
+  private
+
+  def self.find_or_build: (
+    external_message_id: String?,
+    source: String,
+    value: String,
+    ?meta: String?
+  ) -> ParsedMessage
+end

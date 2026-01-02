@@ -1,0 +1,34 @@
+# Type signature for FenceStateRepository
+class FenceStateRepository
+  def last_state: (esn: String, geofence_id: Integer) -> FenceState?
+
+  def already_checked?: (
+    esn: String,
+    geofence_id: Integer,
+    occurred_at: Time
+  ) -> bool
+
+  def create: (
+    geofence: Geofence,
+    location_msg: LocationMsg,
+    state: String
+  ) -> FenceState
+
+  def build: (
+    geofence: Geofence,
+    location_msg: LocationMsg,
+    inside: bool
+  ) -> FenceState
+
+  def build_unknown_state: () -> FenceState
+
+  # Returns :entered, :exited, or nil
+  def detect_transition: (
+    previous_state: FenceState?,
+    current_state: FenceState
+  ) -> Symbol?
+
+  def states_for_esn: (esn: String, ?limit: Integer?) -> untyped
+
+  def states_for_geofence: (geofence_id: Integer, ?limit: Integer?) -> untyped
+end

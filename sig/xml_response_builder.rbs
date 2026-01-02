@@ -1,0 +1,24 @@
+# Type signature for XmlResponseBuilder
+class XmlResponseBuilder
+  SCHEMAS: Hash[Symbol, String]
+  ROOT_ELEMENTS: Hash[Symbol, String]
+
+  @response_type: Symbol
+  @schema: String
+  @root_element: String
+
+  # Class methods for convenience
+  def self.stu_response: (state: String, message: String, message_id: String | Integer) -> String
+  def self.prv_response: (state: String, message: String, message_id: String | Integer) -> String
+
+  # Instance methods
+  def initialize: (Symbol response_type) -> void
+  def build: (state: String, message: String, message_id: String | Integer) -> String
+
+  private
+
+  def build_xml_template: () -> String
+  def substitute_placeholders: (String xml, String state, String message, String | Integer message_id) -> String
+  def format_timestamp: () -> String
+  def strip_whitespace: (String xml) -> String
+end

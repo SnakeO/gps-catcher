@@ -1,0 +1,69 @@
+# Type stubs for ActiveRecord models
+# These are minimal signatures for type checking purposes
+
+class ParsedMessage
+  attr_accessor source: String?
+  attr_accessor value: String?
+  attr_accessor meta: String?
+  attr_accessor message_id: String?
+  attr_accessor esn: String?
+  attr_accessor occurred_at: Time?
+
+  def persisted?: () -> bool
+  def save!: () -> bool
+  def makeHashID: (String? external_id) -> String
+
+  def self.findExisting: (String? external_id, String source, String value, String? meta) -> ParsedMessage?
+end
+
+class LocationMsg
+  attr_accessor id: Integer
+  attr_accessor esn: String?
+  attr_accessor occurred_at: Time?
+  attr_accessor point: untyped  # RGeo point
+
+  def self.where: (*untyped) -> untyped
+end
+
+class Geofence
+  attr_accessor id: Integer
+  attr_accessor esn: String?
+  attr_accessor alert_type: String?
+  attr_accessor webhook_url: String?
+  attr_accessor deleted_at: Time?
+  attr_accessor created_at: Time
+  attr_accessor num_alerts_sent: Integer
+
+  def contains: (Float latitude, Float longitude) -> bool
+  def increment!: (Symbol field) -> void
+
+  def self.where: (*untyped) -> untyped
+end
+
+class FenceState
+  attr_accessor id: Integer?
+  attr_accessor geofence: Geofence?
+  attr_accessor geofence_id: Integer?
+  attr_accessor location_msg: LocationMsg?
+  attr_accessor occurred_at: Time?
+  attr_accessor state: String?
+  attr_accessor esn: String?
+
+  def save!: () -> bool
+
+  def self.new: () -> FenceState
+  def self.where: (*untyped) -> untyped
+end
+
+class FenceAlert
+  def self.create!: (Hash[Symbol, untyped]) -> FenceAlert
+end
+
+class Setting
+  attr_accessor key: String?
+  attr_accessor value: String?
+
+  def save: () -> bool
+
+  def self.where: (*untyped) -> untyped
+end

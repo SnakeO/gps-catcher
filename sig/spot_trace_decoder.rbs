@@ -1,0 +1,17 @@
+# Type signature for SpotTraceDecoder
+class SpotTraceDecoder < BaseDecoder
+  # Nokogiri XML node type
+  type xml_node = untyped
+
+  def decode_message: (xml_node message_node) -> Array[ParsedMessage]
+
+  private
+
+  def extract_common_fields: (xml_node message_node) -> void
+  def extract_coordinates: (xml_node message_node) -> Coordinates?
+  def extract_battery_state: (xml_node message_node) -> bool?
+  def build_location_meta: (xml_node message_node) -> Hash[Symbol, String?]
+  def node_text: (xml_node node, String xpath) -> String?
+  def node_int: (xml_node node, String xpath) -> Integer?
+  def node_float: (xml_node node, String xpath) -> Float?
+end

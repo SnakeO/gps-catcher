@@ -43,6 +43,10 @@ group :development do
   gem 'web-console', '>= 3.3.0'
   gem 'listen', '~> 3.3'
   gem 'spring'
+
+  # Type checking
+  gem 'steep', '~> 1.6'
+  gem 'rbs', '~> 3.4'
 end
 
 group :test do

@@ -1,0 +1,18 @@
+# Type signature for Gl200Decoder
+class Gl200Decoder < BaseDecoder
+  REPORT_TYPES: Array[String]
+
+  type field_array = Array[String?]
+
+  def decode_position_report: (field_array fields) -> Array[ParsedMessage]
+  def can_decode?: (field_array fields) -> bool
+
+  private
+
+  def parse_header_fields: (field_array fields) -> void
+  def parse_location_fields: (field_array fields) -> Array[ParsedMessage]
+  def build_messages_from_fields: (field_array fields) -> Array[ParsedMessage]
+  def extract_battery: (field_array fields) -> void
+  def extract_motion: (field_array fields) -> void
+  def parse_gl200_time: (String? time_str) -> Time
+end

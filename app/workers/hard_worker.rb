@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/workers/hard_worker.rb
 class HardWorker
   include Sidekiq::Worker

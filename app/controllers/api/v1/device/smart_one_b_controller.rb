@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Api::V1::Device::SmartOneBController < ApplicationController
 
 	skip_before_action :verify_authenticity_token

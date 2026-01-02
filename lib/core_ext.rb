@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class String
 	# flip bits in a binary string
 	def flipBits(bin_str)

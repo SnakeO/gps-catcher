@@ -1,3 +1,6 @@
+// GPS Catcher - Asset Pipeline
+// Rails 7.0 application
+//
 // This is a manifest file that'll be compiled into application.js, which will include all the files
 // listed below.
 //

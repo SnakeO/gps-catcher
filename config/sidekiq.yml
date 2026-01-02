@@ -1,3 +1,6 @@
+# GPS Catcher Sidekiq Configuration
+# Updated: 2026
+
 :concurrency: 1
 :pidfile: tmp/pids/sidekiq.pid
 staging:

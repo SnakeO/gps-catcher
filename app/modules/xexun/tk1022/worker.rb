@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Xexun
 	module Tk1022
 		class Worker
